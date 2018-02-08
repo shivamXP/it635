@@ -1,0 +1,108 @@
+#!/usr/bin/php
+<?php
+# connection**********************************
+$mysql = new mysqli("localhost","root","toor","project1");
+if ($mysql->errno != 0)
+{
+	echo "error connecting to database: ".$mysql->error.PHP_EOL;
+	exit(0);
+}
+
+# query for reference **********************************
+/*
+$sql = "select * from sales;";
+$response = $mysql->query($sql);
+if ($mysql->errno != 0)
+{
+	echo "error executing sql: ".$mysql->error.PHP_EOL;
+	echo $sql.PHP_EOL;
+	exit(0);
+}
+
+while($result = $response->fetch_assoc())
+{
+	var_dump($result);
+	echo PHP_EOL;
+}
+*/
+
+# output show filtered *****************************************
+
+/*
+$filter="all";
+
+function showFiltered($filter,$obj){
+if($filter=="all"){
+$query="select name,price,stock from items where stock>0;";
+$response=$obj->query($query);
+while($result = $response->fetch_assoc()){
+echo $result['name']." ";
+echo $result['price']." ";
+echo $result['stock'].PHP_EOL;
+}
+}else{
+$query="select name,price,stock from items where category='$filter' and stock>0;";
+$response=$obj->query($query);
+while($result = $response->fetch_assoc()){
+echo $result['name']." ";
+echo $result['price']." ";
+echo $result['stock'].PHP_EOL;
+}
+}
+}
+
+
+showFiltered($filter,$mysql);
+
+*/
+
+
+# insert items ***************************************
+
+/*
+
+
+$name="inspiron5040";
+$quantity=8;
+$price=250;
+$category="laptop";
+function addItem($name,$quntity,$price,$category,$obj){
+
+$insert="insert into items (name,stock,price,category) values ('$name','$quntity','$price','$category');";
+$obj->query($insert);
+}
+
+addItem($name,$quantity,$price,$category,$mysql);
+ if($mysql->errno != 0)
+{
+        echo "error inserting items: ".$mysql->error.PHP_EOL;
+        exit(0);
+}
+
+*/
+
+# buy items **********************************************
+/*
+$item_no=1;
+$quantity=3;
+
+function buy($item_no,$quantity,$obj){
+$day=date("d");
+$month=date("m");
+$year=date("y");
+$getPrice="select price from items where item_no=$item_no";
+$response=$obj->query($getPrice);
+$result=$response->fetch_assoc();
+$price=$result['price'];
+$total=$price*$quantity;
+$user_id="root";
+$query="UPDATE items SET stock=stock-$quantity WHERE item_no=$item_no;";
+$query2="insert into sales (quantity,item_no,day,month,year,total,user_id) values ('$quantity','$item_no','$day','$month','$year','$total','$user_id');";
+$obj->query($query);
+$obj->query($query2);
+}
+buy($item_no,$quantity,$mysql);
+*/
+
+
+?>
