@@ -17,14 +17,17 @@
   </head>
 
   <body>
+<center>
 
-    <div id = "output">
-	status<p>
+<button type="button" onclick="shivam()">LOG IN</button>
+</center>   
+ <div id = "output">
+    
     </div>
     <div class="container">
 
       <form class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <center><h2 class="form-signin-heading">IT 635</h2><center>
         <label for="inputName" class="sr-only">Username</label>
         <input type="username" id="inputName" class="form-control" placeholder="Username" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
@@ -34,7 +37,7 @@
             <input type="checkbox" value="remember-me"> Remember me
           </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="submitLogin()">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="submitLogin()">Authenticate</button>
       </form>
 
     </div> <!-- /container -->
@@ -44,27 +47,50 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="js/ie10-viewport-bug-workaround.js"></script>
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+ 
 	<script>
+var root;
+var successful;
+var fail;
+
+
 function submitLogin()
 {
 
+    
 	var uname = document.getElementById("inputName").value;
 	var pword = document.getElementById("inputPassword").value;
-	document.getElementById("output").innerHTML = "username: " + uname + "<p>password: "+pword+"<p>";	
 	sendLoginRequest(uname,pword);
 	return 0;
 }
 function HandleLoginResponse(response)
 {
-	var text = JSON.parse(response);
-	document.getElementById("output").innerHTML = "response: "+text+"<p>";
+	var text = JSON.parse(response); 
+        if(text == "successful"){
+		 var uname = document.getElementById("inputName").value;
+	 successful="true";
+		if(uname=="root"){
+ 					root="true";
+					document.getElementById("output").innerHTML = "auth success manager click login"
+				}else{
+					root="false";
+					document.getElementById("output").innerHTML = "auth success customer click login"
+				}
+	}else{
+	root=false;
+	fail=true;
+        successful=false;
+	document.getElementById("output").innerHTML = "sorry try again";
+	}
 }
+
 function sendLoginRequest(username,password)
 {
 	var request = new XMLHttpRequest();
 	request.open("POST","auth.php",true);
 	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+
 	request.onreadystatechange = function ()
 	{
 		if ((this.readyState == 4)&&(this.status == 200))
@@ -73,7 +99,22 @@ function sendLoginRequest(username,password)
 		}
 	}
 	request.send("type=auth&username="+username+"&password="+password);
+
 }
+
+function shivam()
+{
+if(successful=="true" && root =="true"){
+window.location.href='manager.html';
+}
+if(successful=="true" && root =="false"){
+window.location.href='customer.html';
+}
+if(successful=="false"){
+document.getElementById("output").innerHTML = "authenticate first then login";
+}
+}
+ 
 
 </script>
   </body>

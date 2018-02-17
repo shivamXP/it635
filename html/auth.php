@@ -1,18 +1,18 @@
 <?php
 
-require_once("../include/studentDB.inc");
+require_once("/var/www/studentDB.inc");
 function doLogin($username,$password)
 {
-	$studentDB = new StudentAccess("Classes");
+	$studentDB = new StudentAccess("project1");
 	return $studentDB->validateUser($username,$password);
 }
 
-if (!isset($_POST))
+if(!isset($_POST))
 {
 	echo "error: expected POST data!";
 	exit(0);
 }
-if (!isset($_POST["type"]))
+if(!isset($_POST["type"]))
 {
 	echo "error: no type specified";
 	exit(0);
