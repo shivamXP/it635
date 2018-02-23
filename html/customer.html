@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -5,20 +6,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
-
-    <title>Signin Template for Bootstrap</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
   </head>
-<body>
+<body background="image.png" text="DarkBlue">
+<div>
+<center><h1>welcome customer</h1></center></div>
+<center><div id="box"></div></center><br><br>
+<center>
+item_no  : <input type="text" id="item_id" name="item_id"><br>
+quantity : <input type="text" id="quantity" name="quantity"><br><br>
+<div> <button type="button" onclick="buy()">buy</button></div>
+</center>
+<script>
+function buy(){
+ var user = sessionStorage.getItem("user");
+ var id =  document.getElementById("item_id").value;
+ var quantity =  document.getElementById("quantity").value;
+       var request = new XMLHttpRequest();
+        request.open("POST","auth.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+         request.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+                       // HandleResponse(this.responseText);
+                }
+        }
 
-<h1>weclome customer</h1>
+        request.send("type=buy&user="+user+"&item_id="+id+"&quantity="+quantity);
 
+}
+window.onload=loadThis;
+function loadThis(){
+	var user = sessionStorage.getItem("user");
+	var request = new XMLHttpRequest();
+        request.open("POST","auth.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+         request.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+                        HandleResponse(this.responseText);
+                }
+        }
+
+	request.send("type=getItems&username="+user);
+}
+function HandleResponse(response)
+{
+        var text = JSON.parse(response);
+
+	var html = "<table border='1|1'>";
+    for (var i = 0; i < text.length; i++) {
+        html+="<tr>";
+        html+="<td>"+text[i].item_no+"</td>";
+        html+="<td>"+text[i].name+"</td>";
+	 html+="<td>"+text[i].price+"</td>";
+        html+="<td>"+text[i].category+"</td>";
+        html+="</tr>";
+    }
+    html+="</table>";
+document.getElementById("box").innerHTML = html;
+ 
+}
+</script> 
+    
 </body>
 
 </html>
