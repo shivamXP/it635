@@ -7,15 +7,27 @@
     <meta name="description" content="">
     <meta name="author" content="">
   </head>
-<body background="image.png" text="DarkBlue">
+<body background="image.png" text="white">
 <div>
 <center><h1>welcome customer</h1></center></div>
+<center>
+<select id="filter" onchange="loadThis()">
+  <option value="all">all</option>
+  <option value="phone" >phone</option>
+  <option value="laptop">laptop</option>
+  <option value="cloth">cloths</option>
+  <option value="ace">accessory</option>
+</select>
+</center>
+<br><br>  
 <center><div id="box"></div></center><br><br>
 <center>
 item_no  : <input type="text" id="item_id" name="item_id"><br>
 quantity : <input type="text" id="quantity" name="quantity"><br><br>
-<div> <button type="button" onclick="buy()">buy</button></div>
+<div> <button type="button" onclick="buy() ; loadThis()">buy</button></div>
 </center>
+<div id="test">
+</div>
 <script>
 function buy(){
  var user = sessionStorage.getItem("user");
@@ -37,7 +49,12 @@ function buy(){
 }
 window.onload=loadThis;
 function loadThis(){
+
+	var filter = document.getElementById("filter").value;
 	var user = sessionStorage.getItem("user");
+	if(user=="root"){
+	window.location.href='index.html';
+	}
 	var request = new XMLHttpRequest();
         request.open("POST","auth.php",true);
         request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -49,25 +66,33 @@ function loadThis(){
                 }
         }
 
-	request.send("type=getItems&username="+user);
+	request.send("type=getItems&username="+user+"&filter="+filter);
 }
 function HandleResponse(response)
 {
         var text = JSON.parse(response);
-
 	var html = "<table border='1|1'>";
+	 html+="<tr>";
+        html+="<th>"+"item_no"+"</th>";
+        html+="<th>"+"name"+"</th>" ;
+        html+="<th>"+"price"+"</th>";
+        html+="<th>"+"category"+"</th>" ;
+        html+="<th>"+"stock"+"</th>";
+        html+="</tr>";
+
     for (var i = 0; i < text.length; i++) {
         html+="<tr>";
         html+="<td>"+text[i].item_no+"</td>";
         html+="<td>"+text[i].name+"</td>";
-	 html+="<td>"+text[i].price+"</td>";
+	html+="<td>"+text[i].price+"</td>";
         html+="<td>"+text[i].category+"</td>";
+	html+="<td>"+text[i].stock+"</td>";
         html+="</tr>";
     }
     html+="</table>";
 document.getElementById("box").innerHTML = html;
  
-}
+ }
 </script> 
     
 </body>

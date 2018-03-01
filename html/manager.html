@@ -1,24 +1,273 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+  
+  <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
-
-    <title>Signin Template for Bootstrap</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
   </head>
-<body>
+<body background="image.png" text="white">
+<div>
+<center><h1>welcome Manager</h1></center></div>
 
-<h1>welcome manager</h1>
+<br><center>stock available</center><br>  
+<center><div id="box"></div></center><br><br>
+<center>item_no  : <input type="text" id="description" name="description"> <button type="button" onclick="loadDescription()">See Description</button></center>
+<br><center>current low-water mark : <div id="lowwater"></div></center>
+<center>change low-water mark to : <input type="text" id="changeMark" > <button type="button" onclick="changeMark()">change</button></center>
+<br><center><button type="button" onclick="showlowwater()">show low-water items </button></center>
 
+
+<center>sold items</center><br>
+<center><div id="box2"></div></center>
+<br><br>
+<center>
+day:   <input type="text" id="day" value="22">
+<br>
+month: <input type="text" id="month" value="2">
+<br>
+year:  <input type="text" id="year" value="18">
+<br><br>
+<input type="submit" value="see report" onclick="seeReport()">
+</form> 
+
+</center>
+
+
+<script>
+
+window.onload=loadThis;
+function loadThis(){
+
+
+	var user = sessionStorage.getItem("user");
+	if(user!="root"){
+	window.location.href='index.html';
+	}
+        var filter= "all";
+	var request = new XMLHttpRequest();
+        request.open("POST","auth.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+         request.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+                        HandleResponse(this.responseText);
+                }
+        }
+
+	request.send("type=getItems&username="+user+"&filter="+filter);
+	
+	var request2 = new XMLHttpRequest();
+        request2.open("POST","auth.php",true);
+        request2.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        request2.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+                        HandleResponse2(this.responseText);
+                }
+        }
+
+        request2.send("type=sold&username="+user);
+	
+
+	var request3 = new XMLHttpRequest();
+        request3.open("POST","auth.php",true);
+        request3.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        request3.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+                        HandleResponse4(this.responseText);
+                }
+        }
+
+        request3.send("type=lowwater&username="+user);
+
+
+}
+function HandleResponse(response)
+{
+        var text = JSON.parse(response);
+	var html = "<table border='1|1'>";
+	html+="<tr>";
+    	html+="<th>"+"item_no"+"</th>";
+    	html+="<th>"+"name"+"</th>" ;
+    	html+="<th>"+"price"+"</th>";
+   	html+="<th>"+"category"+"</th>" ;
+    	html+="<th>"+"stock"+"</th>";
+ 	html+="</tr>";
+    for (var i = 0; i < text.length; i++) {
+        html+="<tr>";
+        html+="<td>"+text[i].item_no+"</td>";
+        html+="<td>"+text[i].name+"</td>";
+	 html+="<td>"+text[i].price+"</td>";
+         html+="<td>"+text[i].category+"</td>";
+	html+="<td>"+text[i].stock+"</td>";
+        html+="</tr>";
+    }
+    html+="</table>";
+document.getElementById("box").innerHTML = html;
+ 
+ }
+function HandleResponse2(response)
+{
+        var text = JSON.parse(response);
+        var html = "<table border='1|1'>";
+        html+="<tr>";
+        html+="<th>"+"name"+"</th>";
+        html+="<th>"+"item_no"+"</th>" ;
+        html+="<th>"+"items Sold"+"</th>";
+        html+="</tr>";
+    for (var i = 0; i < text.length; i++) {
+        html+="<tr>";
+        html+="<td>"+text[i].name+"</td>";
+        html+="<td>"+text[i].item_no+"</td>";
+         html+="<td>"+text[i].quantity+"</td>";
+        html+="</tr>";
+    }
+    html+="</table>";
+document.getElementById("box2").innerHTML = html;
+
+ }
+
+function HandleResponse4(response)
+{
+        var text = JSON.parse(response);
+	document.getElementById("lowwater").innerHTML = text["0"].markk;
+
+ }
+
+
+function loadDescription(){
+var description = document.getElementById("description").value;
+var request = new XMLHttpRequest();
+        request.open("POST","auth.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+         request.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+                        HandleResponse3(this.responseText);
+                }
+        }
+
+        request.send("type=description&item_no="+description);
+
+
+}
+function HandleResponse3(response)
+{
+        var text = JSON.parse(response);
+        
+	alert(text[0].description);
+ }
+
+function changeMark(){
+	var mark =  document.getElementById("changeMark").value;
+	var request = new XMLHttpRequest();
+        request.open("POST","auth.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        request.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+			var text =  JSON.parse(this.responseText);
+			alert(text);
+			loadThis();
+                }
+       }
+
+        request.send("type=changeMark&mark="+mark);
+
+}
+function showlowwater(){
+	 var request = new XMLHttpRequest();
+        request.open("POST","auth.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+         request.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+                        HandleResponse5(this.responseText);
+                }
+        }
+
+        request.send("type=showlowwater");
+}
+
+
+function HandleResponse5(response)
+{
+        var text = JSON.parse(response);
+	var html = "<table border='1|1'>";
+	html+="<tr>";
+    	html+="<th>"+"item_no"+"</th>";
+    	html+="<th>"+"name"+"</th>" ;
+    	html+="<th>"+"stock"+"</th>";
+ 	html+="</tr>";
+    for (var i = 0; i < text.length; i++) {
+        html+="<tr>";
+        html+="<td>"+text[i].item_no+"</td>";
+        html+="<td>"+text[i].name+"</td>";
+	html+="<td>"+text[i].stock+"</td>";
+        html+="</tr>";
+    }
+    html+="</table>";
+	var myWindow = window.open("", "myWindow", "width=350, height=600");
+	myWindow.document.write(html); 
+ 
+ }
+function seeReport(){
+	var day = document.getElementById("day").value;	
+	var month = document.getElementById("month").value;
+	var year = document.getElementById("year").value;
+	 var request = new XMLHttpRequest();
+        request.open("POST","auth.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+         request.onreadystatechange = function ()
+        {
+                if ((this.readyState == 4)&&(this.status == 200))
+                {
+                        HandleResponse6(this.responseText);
+                }
+        }
+
+        request.send("type=report&day="+day+"&month="+month+"&year="+year);
+
+}
+function HandleResponse6(response)
+{
+        var text = JSON.parse(response);       
+	 var html = "<table border='1|1'>";
+        html+="<tr>";
+        html+="<th>"+"user_id"+"</th>";
+        html+="<th>"+"item_no"+"</th>" ;
+        html+="<th>"+"quantity"+"</th>";
+	html+="<th>"+"total"+"</th>" ;
+        html+="<th>"+"order_no"+"</th>";
+        html+="</tr>";
+    for (var i = 0; i < text.length; i++) {
+        html+="<tr>";
+        html+="<td>"+text[i].user_id+"</td>";
+        html+="<td>"+text[i].item_no+"</td>";
+        html+="<td>"+text[i].quantity+"</td>";
+	 html+="<td>"+text[i].total+"</td>";
+        html+="<td>"+text[i].order_no+"</td>";
+        html+="</tr>";
+    }
+    html+="</table>";
+        var myWindow = window.open("", "myWindow", "width=350, height=600");
+        myWindow.document.write(html);
+
+ }
+
+</script> 
+    
 </body>
 
 </html>
+
