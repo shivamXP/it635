@@ -4,7 +4,7 @@ UCID:ssp246
 
 midterm project
 
-this is a website for shoping.
+this is a website for shoping.<br>
 login or register
 = users can buy items from the available list.
 = manager can see items check stock and set "lowwater"
