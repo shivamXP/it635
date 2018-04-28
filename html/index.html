@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
 
-    <title>Signin Template for Bootstrap</title>
+    <title>IT635 midterm project</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -16,15 +16,29 @@
     <link href="signin.css" rel="stylesheet">
   </head>
 
-  <body>
+  <body background="image.png" style="color:DodgerBlue">
+<div>
+<p>
+<p>
+</div>
+<center> 
+ <b> 	
+         <div id = "output" style="color:DodgerBlue">
+    
+         </div>
+</b>
+</center>
 
-    <div id = "output">
-	status<p>
-    </div>
     <div class="container">
 
-      <form class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
+      	<div>
+	<br>  
+	<br>
+	</div>
+
+	
+	<form class="form-signin">
+        <center><h2 class="form-signin-heading">IT 635 shopping </h2><center> <br><br>
         <label for="inputName" class="sr-only">Username</label>
         <input type="username" id="inputName" class="form-control" placeholder="Username" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
@@ -34,7 +48,9 @@
             <input type="checkbox" value="remember-me"> Remember me
           </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="submitLogin()">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="submitLogin()">log in</button>
+<button class="btn btn-lg btn-primary btn-block" type="button" onclick="registration()">sine up</button>
+
       </form>
 
     </div> <!-- /container -->
@@ -44,27 +60,47 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="js/ie10-viewport-bug-workaround.js"></script>
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+ 
 	<script>
+var root;
+var successful;
+var fail;
+
+
 function submitLogin()
 {
 
+    
 	var uname = document.getElementById("inputName").value;
 	var pword = document.getElementById("inputPassword").value;
-	document.getElementById("output").innerHTML = "username: " + uname + "<p>password: "+pword+"<p>";	
 	sendLoginRequest(uname,pword);
 	return 0;
 }
 function HandleLoginResponse(response)
 {
-	var text = JSON.parse(response);
-	document.getElementById("output").innerHTML = "response: "+text+"<p>";
+	var text = JSON.parse(response); 
+        if(text == "successful"){
+		 var uname = document.getElementById("inputName").value;
+		if(uname=="root"){
+					document.getElementById("output").innerHTML = "auth success manager"
+					sessionStorage.setItem("user","root");
+					window.location.href='manager.html';
+				}else{
+					document.getElementById("output").innerHTML = "auth success customer"	
+					sessionStorage.setItem("user",uname);
+					window.location.href='customer.html';
+				}
+	}else{
+	document.getElementById("output").innerHTML = "sorry username or password incorrect ! try again";
+	}
 }
 function sendLoginRequest(username,password)
 {
 	var request = new XMLHttpRequest();
 	request.open("POST","auth.php",true);
 	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+
 	request.onreadystatechange = function ()
 	{
 		if ((this.readyState == 4)&&(this.status == 200))
@@ -73,8 +109,11 @@ function sendLoginRequest(username,password)
 		}
 	}
 	request.send("type=auth&username="+username+"&password="+password);
-}
 
+}
+function registration(){
+window.location.href='registration.html';
+}
 </script>
   </body>
 </html>

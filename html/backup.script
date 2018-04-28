@@ -1,0 +1,51 @@
+#! /bin/bash
+	
+	# BACKUP 
+
+	ls /var/log/mysql/ > /var/log/mysql/temp; 
+	touch /var/log/mysql/files.txt
+	awk -F. '/[0-9]$/{ print $2 }' /var/log/mysql/temp > /var/log/mysql/files.txt	
+	max=0
+	for p in $(cat /var/log/mysql/files.txt);
+	
+	do 
+		if [ "$p" -gt "$max" ]
+		then 
+			max=$p;
+		fi
+	done
+
+	echo "last bin log is : $max ";
+ 	mysqladmin flush-logs -uroot -ptoor
+	echo "flushing logs "
+	echo "backing up database at /home/ubuntu/Incrementalbackups"
+	cp  /var/log/mysql/mysql-bin.$max  /home/ubuntu/Incrementalbackups
+	rm /var/log/mysql/temp;
+	rm /var/log/mysql/files.txt;
+
+	#       ROTATION
+
+        ls /home/ubuntu/Incrementalbackups > /home/ubuntu/Incrementalbackups/rotation.txt
+        awk -F. '/[0-9]$/{ print $2 }' /home/ubuntu/Incrementalbackups/rotation.txt > /home/ubuntu/Incrementalbackups/numbers.txt
+        total=0
+        min=$(sed -n 1p /home/ubuntu/Incrementalbackups/numbers.txt)
+        total=$(cat /home/ubuntu/Incrementalbackups/numbers.txt | wc -l)
+        if [ "$total" -gt "4" ];
+        then
+                 for a in $(cat /home/ubuntu/Incrementalbackups/numbers.txt);
+                        do
+                                if [ "$a" -lt "$min" ];
+                                then
+                                min=$a;
+                                fi
+
+                        done
+		
+        	 rm /home/ubuntu/Incrementalbackups/mysql-bin.$min
+		echo "removed last backup  last 4 backups are available "
+        fi
+
+        rm /home/ubuntu/Incrementalbackups/rotation.txt
+        rm /home/ubuntu/Incrementalbackups/numbers.txt
+
+
