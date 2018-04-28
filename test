@@ -1,0 +1,34 @@
+#!/usr/bin/php
+<?php
+$mysql = new mysqli("localhost","root","toor","project1");
+if ($mysql->errno != 0)
+{
+	echo "error connecting to database: ".$mysql->error.PHP_EOL;
+	exit(0);
+}
+/*
+$sql = "select * from items";
+$response = $mysql->query($sql);
+if ($mysql->errno != 0)
+{
+	echo "error executing sql: ".$mysql->error.PHP_EOL;
+	echo $sql.PHP_EOL;
+	exit(0);
+}
+$result = $response->fetch_assoc();
+var_dump($result);
+*/
+
+$filter="laptop";
+function showFiltered($filter,$obj){
+$query="select * from items where category='laptop';";
+$response=$obj->query($query);
+$result = $response->fetch_assoc();
+var_dump($result);
+echo $result['name']." ";
+echo $result['price']." ";
+echo $result['stock'].PHP_EOL;
+}
+showFiltered($filter,$mysql);
+
+?>
