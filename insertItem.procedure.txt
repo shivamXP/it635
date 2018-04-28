@@ -1,0 +1,8 @@
+DELIMITER $$
+CREATE PROCEDURE insertItem(IN Name varchar(20),IN Stock varchar(20),IN Price int(3),IN Category varchar(20), IN Description varchar(200))
+
+ BEGIN
+ INSERT INTO items (name,stock,price,category) values(Name,Stock,Price,Category);
+ 
+ END $$
+DELIMITER ;
