@@ -1,0 +1,4 @@
+#!/bin/bash
+CREATE USER 'root'@'%' IDENTIFIED BY 'toor';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+

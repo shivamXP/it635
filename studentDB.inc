@@ -5,7 +5,7 @@ class StudentAccess
 private $db;
 public function __construct($database)
 {
-	$this->db = new mysqli("localhost","root","toor",$database);
+	$this->db = new mysqli("18.217.92.95","root","toor",$database);
 	if ($this->db->connect_errno != 0)
 	{
 		echo "error connecting to databse: ".$this->db->connect_error.PHP_EOL;

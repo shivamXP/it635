@@ -1,0 +1,3 @@
+#!/bin/bash
+mysql < /home/ubuntu/mysql.mysql
+mysql < /home/ubuntu/script2
